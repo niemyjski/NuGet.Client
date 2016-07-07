@@ -53,6 +53,16 @@ namespace NuGet.ProjectManagement
         /// </summary>
         public event EventHandler<PackageEventArgs> PackageReferenceRemoved;
 
+        /// <summary>
+        /// Event to be raised when batch processing of install/ uninstall packages starts at a project level
+        /// </summary>
+        public event EventHandler<PackageEventArgs> BatchStart;
+
+        /// <summary>
+        /// Event to be raised when batch processing of install/ uninstall packages ends at a project level
+        /// </summary>
+        public event EventHandler<PackageEventArgs> BatchEnd;
+
         public IMSBuildNuGetProjectSystem MSBuildNuGetProjectSystem { get; }
         public FolderNuGetProject FolderNuGetProject { get; }
         public PackagesConfigNuGetProject PackagesConfigNuGetProject { get; }
@@ -101,6 +111,20 @@ namespace NuGet.ProjectManagement
         public void AddBindingRedirects()
         {
             MSBuildNuGetProjectSystem.AddBindingRedirects();
+        }
+
+        public void NotifyStartBatchProcessing()
+        {
+            var packageEventArgs = new PackageEventArgs(this, null, null);
+            BatchStart?.Invoke(this, packageEventArgs);
+            PackageEventsProvider.Instance.NotifyBatchStart(packageEventArgs);
+        }
+
+        public void NotifyEndBatchProcessing()
+        {
+            var packageEventArgs = new PackageEventArgs(this, null, null);
+            BatchEnd?.Invoke(this, packageEventArgs);
+            PackageEventsProvider.Instance.NotifyBatchEnd(packageEventArgs);
         }
 
         private static bool IsBindingRedirectsDisabled(INuGetProjectContext nuGetProjectContext)

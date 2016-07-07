@@ -40,56 +40,59 @@ namespace NuGet.ProjectManagement
         /// </summary>
         public event EventHandler<PackageEventArgs> PackageReferenceRemoved;
 
+        /// <summary>
+        /// Raised when batch processing of install/ uninstall packages starts at a project level
+        /// </summary>
+        public event EventHandler<PackageEventArgs> BatchStart;
+
+        /// <summary>
+        /// Raised when batch processing of install/ uninstall packages ends at a project level
+        /// </summary>
+        public event EventHandler<PackageEventArgs> BatchEnd;
+
         internal PackageEvents()
         {
         }
 
         internal void NotifyInstalling(PackageEventArgs e)
         {
-            if (PackageInstalling != null)
-            {
-                PackageInstalling(this, e);
-            }
+            PackageInstalling?.Invoke(this, e);
         }
 
         internal void NotifyInstalled(PackageEventArgs e)
         {
-            if (PackageInstalled != null)
-            {
-                PackageInstalled(this, e);
-            }
+            PackageInstalled?.Invoke(this, e);
         }
 
         internal void NotifyUninstalling(PackageEventArgs e)
         {
-            if (PackageUninstalling != null)
-            {
-                PackageUninstalling(this, e);
-            }
+            PackageUninstalling?.Invoke(this, e);
         }
 
         internal void NotifyUninstalled(PackageEventArgs e)
         {
-            if (PackageUninstalled != null)
-            {
-                PackageUninstalled(this, e);
-            }
+            PackageUninstalled?.Invoke(this, e);
         }
 
         internal void NotifyReferenceAdded(PackageEventArgs e)
         {
-            if (PackageReferenceAdded != null)
-            {
-                PackageReferenceAdded(this, e);
-            }
+            PackageReferenceAdded?.Invoke(this, e);
         }
 
         internal void NotifyReferenceRemoved(PackageEventArgs e)
         {
-            if (PackageReferenceRemoved != null)
-            {
-                PackageReferenceRemoved(this, e);
-            }
+            PackageReferenceRemoved?.Invoke(this, e);
         }
+
+        internal void NotifyBatchStart(PackageEventArgs e)
+        {
+            BatchStart?.Invoke(this, e);
+        }
+
+        internal void NotifyBatchEnd(PackageEventArgs e)
+        {
+            BatchEnd?.Invoke(this, e);
+        }
+
     }
 }

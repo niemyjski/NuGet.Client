@@ -8,4 +8,9 @@ namespace NuGet.VisualStudio
     /// </summary>
     /// <param name="metadata">Description of the package.</param>
     public delegate void VsPackageEventHandler(IVsPackageMetadata metadata);
+
+    /// <summary>
+    /// Defines an batch event handler delegate for package related events.
+    /// </summary>
+    public delegate void VsPackageProjectEventHandler(IVsPackageProjectMetadata metadata);
 }

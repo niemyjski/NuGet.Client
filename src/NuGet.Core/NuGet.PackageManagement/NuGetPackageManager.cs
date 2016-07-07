@@ -1702,6 +1702,9 @@ namespace NuGet.PackageManagement
                     if (msbuildProject != null)
                     {
                         msbuildProject.MSBuildNuGetProjectSystem.BeginProcessing();
+
+                        // raise Nuget batch start event
+                        msbuildProject.NotifyStartBatchProcessing();
                     }
 
                     foreach (var nuGetProjectAction in actionsList)
@@ -1786,6 +1789,9 @@ namespace NuGet.PackageManagement
                     if (msbuildProject != null)
                     {
                         msbuildProject.MSBuildNuGetProjectSystem.EndProcessing();
+
+                        // raise nuget batch end event
+                        msbuildProject.NotifyEndBatchProcessing();
                     }
                 }
 

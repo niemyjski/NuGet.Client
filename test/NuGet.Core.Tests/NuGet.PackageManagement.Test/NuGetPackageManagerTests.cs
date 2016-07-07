@@ -3071,6 +3071,45 @@ namespace NuGet.Test
                 Assert.Equal(NuGetProjectActionType.Install, packageActions[5].NuGetProjectActionType);
                 Assert.Equal(singlePackageSource, packageActions[5].SourceRepository.PackageSource.Source);
 
+                string projectName;
+                if (!msBuildNuGetProject.TryGetMetadata(NuGetProjectMetadataKeys.Name, out projectName))
+                {
+                    projectName = string.Empty;
+                }
+
+                string projectGuid = string.Empty;
+
+                bool batchStartFlag, batchEndFlag;
+                batchStartFlag = batchEndFlag = false;
+
+                // add batch events handler
+                msBuildNuGetProject.BatchStart += (o, args) =>
+                {
+                    batchStartFlag = true;
+                    string expectedProjectName;
+                    if (!args.Project.TryGetMetadata(NuGetProjectMetadataKeys.Name, out expectedProjectName))
+                    {
+                        expectedProjectName = string.Empty;
+                    }
+                    Assert.Equal(projectName, expectedProjectName);
+                    Assert.NotNull(args.Project.Guid);
+                    projectGuid = args.Project.Guid;
+                };
+
+                msBuildNuGetProject.BatchEnd += (o, args) =>
+                {
+                    batchEndFlag = true;
+                    string expectedProjectName;
+                    if (!args.Project.TryGetMetadata(NuGetProjectMetadataKeys.Name, out expectedProjectName))
+                    {
+                        expectedProjectName = string.Empty;
+                    }
+                    Assert.Equal(projectName, expectedProjectName);
+                    Assert.NotNull(args.Project.Guid);
+                    Assert.Equal(projectGuid, args.Project.Guid);
+                };
+
+
                 // Main Act
                 await nuGetPackageManager.ExecuteNuGetProjectActionsAsync(msBuildNuGetProject, packageActions, new TestNuGetProjectContext(), token);
 
@@ -3088,6 +3127,8 @@ namespace NuGet.Test
                 Assert.True(File.Exists(folderNuGetProject.GetInstalledPackageFilePath(packageIdentity)));
                 Assert.True(File.Exists(folderNuGetProject.GetInstalledPackageFilePath(MorePackageWithDependents[0])));
                 Assert.True(File.Exists(folderNuGetProject.GetInstalledPackageFilePath(MorePackageWithDependents[2])));
+                Assert.True(batchStartFlag);
+                Assert.True(batchEndFlag);
             }
         }
 

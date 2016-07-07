@@ -13,6 +13,8 @@ namespace NuGet.ProjectManagement
 {
     public abstract class NuGetProject
     {
+        private readonly string _guid = System.Guid.NewGuid().ToString();
+
         protected NuGetProject()
             : this(new Dictionary<string, object>())
         {
@@ -33,6 +35,14 @@ namespace NuGet.ProjectManagement
         public IReadOnlyDictionary<string, object> Metadata
         {
             get { return InternalMetadata; }
+        }
+
+        public string Guid
+        {
+            get
+            {
+                return _guid;
+            }
         }
 
         // TODO: Consider adding CancellationToken here
