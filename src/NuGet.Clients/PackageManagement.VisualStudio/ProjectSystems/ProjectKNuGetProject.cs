@@ -139,9 +139,12 @@ namespace NuGet.PackageManagement.VisualStudio
                 var moniker = item as INuGetPackageMoniker;
                 if (moniker != null)
                 {
-                    identity = new PackageIdentity(
-                        moniker.Id,
-                        NuGetVersion.Parse(moniker.Version));
+                    // As with UWP project.json projects, treat the version as a version range and
+                    // use the minimum version of that range.
+                    var versionRange = VersionRange.Parse(moniker.Version);
+                    var version = versionRange.MinVersion;
+
+                    identity = new PackageIdentity(moniker.Id, version);
                 }
                 else
                 {
