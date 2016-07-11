@@ -27,7 +27,7 @@ namespace NuGet.PackageManagement.VisualStudio
 
     public class ProjectKNuGetProject : ProjectKNuGetProjectBase
     {
-        private const string StateKey = "State";
+        private const string StateKey = "PackageUpgradeState";
 
         private INuGetPackageManager _project;
 
