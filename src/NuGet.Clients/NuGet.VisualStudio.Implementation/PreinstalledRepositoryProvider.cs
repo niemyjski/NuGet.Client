@@ -35,9 +35,9 @@ namespace NuGet.VisualStudio
         public void AddFromRegistry(string keyName, bool isPreUnzipped)
         {
             string path = GetRegistryRepositoryPath(keyName, null, _errorHandler);
-
+            var packageSource = new Configuration.PackageSource(path);
             // Override the feed type as unzipped if specified, otherwise allow the source to determine what it is.
-            var feedType = isPreUnzipped ? FeedType.FileSystemUnzipped : FeedType.Undefined;
+            var feedType = isPreUnzipped ? FeedTypeUtility.GetFeedType(packageSource) : FeedType.Undefined;
 
             var source = CreateRepository(new Configuration.PackageSource(path), feedType);
             _repositories.Add(source);
